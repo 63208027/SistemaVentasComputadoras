@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Carrito de Compras</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrito %}
+                <tr>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ item.precio }}</td>
+                    <td>{{ item.cantidad * item.precio }}</td>
+                    <td>
+                        <a href="#" class="btn btn-warning btn-sm">Actualizar</a>
+                        <a href="{{ url_for('eliminar_del_carrito', id_producto=item['id']) }}"
+                           class="btn btn-danger btn-sm">
+                           Eliminar
+                       </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       <form action="{{ url_for('crear_pedido') }}" method="POST">
+
+          {% for item in carrito %}
+              <input type="hidden" name="productos" value="{{ item.id }}">
+              <input type="hidden" name="precio_{{ item.id }}" value="{{ item.precio }}">
+          {% endfor %}
+
+          {% if mostrar_pago == '1' %}
+            <button type="submit" class="btn btn-success">
+             Proceder al Pago
+            </button>
+         {% endif %}
+     <a href="{{ url_for('cliente_dashboard') }}" class="btn btn-secondary">
+    Atrás
+     </a>
+
+</form>
+    </div>
+</body>
+</html>

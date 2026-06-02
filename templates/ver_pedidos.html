@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Pedidos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Mis Pedidos</h1>
+        <ul>
+            {% for pedido in pedidos %}
+            <li>Pedido ID: {{ pedido.id_pedido }}, Fecha: {{ pedido.fecha_pedido }}, Estado: {{ pedido.estado }}</li>
+            {% endfor %}
+        </ul>
+
+        <div class="text-center mt-4">
+          <a href="{{ url_for('cliente_dashboard') }}" class="btn btn-secondary">
+          Atrás
+          </a>
+        </div>
+    </div>
+</body>
+</html>

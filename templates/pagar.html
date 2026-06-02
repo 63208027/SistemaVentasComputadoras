@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proceder con el Pago</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Detalles del Pedido</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles_pedido %}
+                <tr>
+                    <td>{{ detalle[2] }}</td>
+                    <td>{{ detalle[3] }}</td>
+                    <td>{{ detalle[4] }}</td>
+                    <td>{{ detalle[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center">
+            <form action="{{ url_for('completar_pago', id_pedido=id_pedido) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-success">Proceder con el Pago</button>
+            </form>
+            <a href="{{ url_for('ver_productos') }}" class="btn btn-secondary" style="display:inline;">Añadir más productos</a>
+            <a href="javascript:history.back()" class="btn btn-secondary" style="display:inline;">Regresar</a>
+        </div>
+    </div>
+</body>
+</html>

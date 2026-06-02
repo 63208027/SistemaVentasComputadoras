@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Modificar Producto</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            /* Color de fondo a mi gusto: un tono suave de azul verdoso */
+            background-color: #E0FFFF; /* Azul verdoso muy claro (LightCyan) */
+            display: flex;
+            justify-content: center; /* Centra horizontalmente el contenido del body */
+            align-items: flex-start; /* Alinea el contenido arriba, para que no se pegue al centro vertical si la página es corta */
+            min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
+            padding-top: 30px; /* Un poco de espacio desde la parte superior */
+            padding-bottom: 30px; /* Un poco de espacio desde la parte inferior */
+        }
+
+        .container {
+            /* Asegura que el contenedor tenga un ancho máximo para centrarse */
+            max-width: 600px; /* Puedes ajustar este valor si lo deseas */
+            background-color: #ffffff; /* Fondo blanco para el contenedor del formulario */
+            padding: 30px;
+            border-radius: 8px; /* Bordes ligeramente redondeados */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave para darle profundidad */
+        }
+
+        h1, h2 {
+            text-align: center; /* Centra los títulos */
+            color: #343a40; /* Color de texto oscuro para los títulos */
+            margin-bottom: 30px; /* Espacio debajo de los títulos */
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #495057; /* Color de texto para las etiquetas */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* Color azul de Bootstrap */
+            border-color: #007bff;
+            width: 100%; /* Botones de ancho completo */
+            padding: 10px;
+            font-size: 1.1rem;
+            margin-top: 20px; /* Espacio encima del botón */
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* Estilos específicos para la selección del producto cuando no hay uno seleccionado */
+        .container form:first-of-type {
+            margin-bottom: 40px; /* Más espacio debajo del formulario de selección */
+            padding-bottom: 20px; /* Un poco de padding abajo */
+            border-bottom: 1px solid #dee2e6; /* Línea separadora */
+        }
+
+        /* Ajuste para el h2 del segundo formulario cuando el producto está presente */
+        {% if producto %}
+        .container form:last-of-type {
+            margin-top: 0; /* Elimina el margen superior predeterminado si ya hay un h2 encima */
+        }
+        {% endif %}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modificar Producto</h1>
+
+        <form action="{{ url_for('modificar_producto') }}" method="post">
+            <div class="form-group">
+                <label for="id_producto">Selecciona un Producto</label>
+                <select class="form-control" id="id_producto" name="id_producto" required>
+                    {% for p in productos %}
+                    {# Asegura que si un producto ya está seleccionado, se mantenga en el dropdown #}
+                    <option value="{{ p[0] }}" {% if producto and p[0] == producto[0] %}selected{% endif %}>
+                        {{ p[1] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Seleccionar</button>
+        </form>
+
+        {% if producto %}
+        <h2 class="mt-5">Modificar Información del Producto</h2>
+        <form action="{{ url_for('modificar_producto') }}" method="post">
+            <input type="hidden" name="id_producto" value="{{ producto[0] }}">
+            <div class="form-group">
+                <label for="nombre">Nombre del Producto</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ producto[1] }}" required>
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" required>{{ producto[2] }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="precio">Precio</label>
+                <input type="number" class="form-control" id="precio" name="precio" step="0.01" value="{{ producto[3] }}" required>
+            </div>
+            <div class="form-group">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" class="form-control" id="cantidad" name="cantidad" value="{{ producto[4] }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Modificar Producto</button>
+        </form>
+        {% endif %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

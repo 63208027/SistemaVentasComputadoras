@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administrador - Gestión</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            /* Colores del panel de administrador (para consistencia) */
+            --primary-color: #1d3557; /* Azul oscuro dominante */
+            --secondary-color: #457b9d; /* Azul medio para acentos */
+            --accent-color: #e63946; /* Rojo vibrante para resaltar */
+            --light-bg: #f8f9fa; /* Fondo muy claro */
+            --text-dark: #212529; /* Texto oscuro general */
+            --text-light: #f1faee; /* Texto claro */
+            --success-color: #28a745; /* Verde para disponible */
+            --danger-color: #dc3545; /* Rojo para agotado/eliminar */
+            --warning-color: #ffc107; /* Amarillo para acciones secundarias */
+
+            /* Sombras sutiles */
+            --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+            --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
+            --shadow-lg: 0 1rem 3rem rgba(0,0,0,.175);
+
+            /* RGB para uso en rgba() */
+            --primary-color-rgb: 29, 53, 87;
+            --secondary-color-rgb: 69, 123, 157;
+            --accent-color-rgb: 230, 57, 70;
+            --light-bg-rgb: 248, 249, 250;
+            --text-dark-rgb: 33, 37, 41;
+            --text-light-rgb: 241, 250, 238;
+            --success-color-rgb: 40, 167, 69;
+            --danger-color-rgb: 220, 53, 69;
+            --warning-color-rgb: 255, 193, 7;
+
+            /* Colores para las tarjetas de producto */
+            --card-bg: rgba(255, 255, 255, 0.15); /* Fondo semitransparente para las cards */
+            --card-border: rgba(255, 255, 255, 0.3);
+            --card-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--light-bg), #e9ecef);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* --- Encabezado / Navbar --- */
+        .admin-header {
+            background-color: var(--primary-color);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .admin-nav .nav-link {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-nav .nav-link:hover,
+        .admin-nav .nav-link.active {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        /* --- Contenedor Principal (para el contenido de la página) --- */
+        .main-content {
+            padding: 2rem 1.5rem; /* Ajuste para espacio en los lados */
+        }
+
+        /* --- Título de Sección principal (NO dentro de cards) --- */
+        .main-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700; /* Más grueso para el título principal */
+            color: var(--primary-color);
+            margin-bottom: 2.5rem; /* Más espacio debajo */
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid rgba(var(--secondary-color-rgb), 0.3); /* Borde más pronunciado */
+            text-align: center; /* Centrar el título */
+            font-size: 2.5rem; /* Tamaño más grande */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* --- Estilos de la Tarjeta de Producto --- */
+        .product-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px) saturate(180%);
+            -webkit-backdrop-filter: blur(10px) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: 20px; /* Bordes redondeados */
+            box-shadow: 0 10px 30px 0 var(--card-shadow-color),
+                        0 0 0 5px rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            margin-bottom: 30px; /* Espacio entre tarjetas */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centrar contenido de la tarjeta */
+            text-align: center;
+            color: var(--text-dark); /* Color de texto para el contenido de la tarjeta */
+            overflow: hidden; /* Asegura que la imagen no se desborde */
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px); /* Efecto flotante al pasar el mouse */
+            box-shadow: 0 15px 45px 0 rgba(var(--primary-color-rgb), 0.15),
+                        0 0 0 8px rgba(255, 255, 255, 0.05);
+        }
+
+        .product-card .product-image-wrapper {
+            width: 100%;
+            height: 200px; /* Altura fija para las imágenes */
+            margin-bottom: 20px;
+            border-radius: 15px; /* Bordes redondeados para el wrapper de la imagen */
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.5); /* Borde blanco sutil */
+            box-shadow: var(--shadow-sm);
+        }
+
+        .product-card .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Recorta la imagen para que cubra el espacio */
+            display: block;
+        }
+
+        .product-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.6rem;
+            color: var(--primary-color); /* Color de título dentro de la card */
+            margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .product-card p {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .product-card p i {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+
+        /* --- Badges de Estado --- */
+        .status-badge {
+            padding: .6em 1em; /* Más padding para los badges */
+            border-radius: .8rem;
+            font-size: .85em; /* Tamaño ligeramente más grande */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            display: inline-block;
+            margin-top: 10px; /* Espacio superior */
+            box-shadow: var(--shadow-sm); /* Sombra para los badges */
+        }
+
+        .status-badge.available {
+            background-color: var(--success-color);
+            color: #fff;
+        }
+
+        .status-badge.unavailable {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+        /* --- Botones de Acción --- */
+        .product-actions {
+            margin-top: 25px;
+            width: 100%;
+            display: flex;
+            flex-direction: column; /* Botones apilados por defecto */
+            gap: 12px; /* Espacio entre botones */
+        }
+
+        .btn-action {
+            font-size: 0.95rem; /* Tamaño de fuente un poco más grande */
+            padding: .8rem 1.2rem;
+            border-radius: 12px; /* Bordes más redondeados */
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrar texto e ícono */
+            gap: 8px;
+            width: 100%; /* Botones de ancho completo en la card */
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(var(--danger-color-rgb), 0.3);
+        }
+        .btn-danger:active {
+            background-color: #a71d2a;
+            border-color: #921924;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+            color: var(--text-dark); /* Texto oscuro para el botón amarillo */
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(var(--warning-color-rgb), 0.3);
+        }
+        .btn-warning:active {
+            background-color: #d39e00;
+            border-color: #c69500;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* --- Responsive Navbar (Bootstrap 5) --- */
+        @media (max-width: 991.98px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-bottom: 0.5rem;
+            }
+            .admin-header h1 {
+                margin-bottom: 1rem;
+            }
+            .admin-nav .nav {
+                flex-direction: column;
+                width: 100%;
+            }
+            .admin-nav .nav-item {
+                width: 100%;
+            }
+            .admin-nav .nav-link {
+                padding: 0.75rem 1.5rem;
+                border-radius: 0;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .admin-nav .nav-link:last-child {
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .admin-nav .nav-item:not(:last-child) {
+                margin-right: 0.5rem;
+            }
+        }
+
+        /* Responsive para las tarjetas de producto */
+        @media (min-width: 1200px) { /* Extra large devices (desktops) */
+            .col-xl-3 {
+                flex: 0 0 auto;
+                width: 25%; /* 4 cards por fila */
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199.98px) { /* Large devices (desktops) */
+            .col-lg-4 {
+                flex: 0 0 auto;
+                width: 33.333333%; /* 3 cards por fila */
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) { /* Medium devices (tablets) */
+            .col-md-6 {
+                flex: 0 0 auto;
+                width: 50%; /* 2 cards por fila */
+            }
+            .product-actions {
+                flex-direction: row; /* Botones en fila en tablet */
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .btn-action {
+                width: auto; /* Ancho ajustado al contenido */
+                flex-grow: 1; /* Para que ocupen el espacio disponible */
+            }
+        }
+
+        @media (max-width: 767.98px) { /* Small devices (phones) */
+            .main-content h2 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            .product-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            .product-card h3 {
+                font-size: 1.4rem;
+            }
+            .product-card .product-image-wrapper {
+                height: 180px;
+            }
+            .product-actions {
+                flex-direction: column; /* Volver a apilados en móvil */
+                gap: 10px;
+            }
+            .btn-action {
+                font-size: 0.9rem;
+                padding: .7rem 1rem;
+                width: 100%; /* Ancho completo en móvil */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <header class="admin-header px-4">
+            <h1>Panel de Administrador</h1>
+            <nav class="admin-nav">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a href="{{ url_for('agregar_producto') }}" class="nav-link">
+                            <i class="fas fa-plus-circle"></i> Agregar Producto
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('modificar_producto') }}" class="nav-link">
+                            <i class="fas fa-edit"></i> Modificar Producto
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('ver_clientes') }}" class="nav-link">
+                            <i class="fas fa-users"></i> Ver Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('logout') }}" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            <h2><i class="fas fa-cubes"></i> Gestión de Productos y Cantidades</h2>
+
+            <div class="row justify-content-center"> {# Usamos row para la cuadrícula de cards #}
+                {% for producto in productos %}
+                {# Columnas responsivas para las cards: 1 en móviles, 2 en tablet, 3 en desktop, 4 en extra large #}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 d-flex">
+                    <div class="product-card flex-fill"> {# flex-fill para que todas las cards tengan la misma altura en la fila #}
+                        <div class="product-image-wrapper">
+                            <img src="{{ url_for('static', filename='images/' ~ producto[5]) }}"
+                                 alt="{{ producto[1] }}" class="product-image">
+                        </div>
+                        <h3>{{ producto[1] }}</h3>
+                        <p><i class="fas fa-boxes"></i> Cantidad: {{ producto[4] }}</p>
+                        <div>
+                            {% if producto[6] == 'agotado' %}
+                                <span class="status-badge unavailable"><i class="fas fa-times-circle"></i> Agotado</span>
+                            {% else %}
+                                <span class="status-badge available"><i class="fas fa-check-circle"></i> Disponible</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-actions">
+                            <!---
+                            <form action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}" method="post">
+                                <button type="submit" class="btn btn-danger btn-action">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </button>
+                            </form>
+                        -->
+                            <form action="{{ url_for('cambiar_estado_producto', id_producto=producto[0]) }}" method="post">
+                                <button type="submit" class="btn btn-warning btn-action">
+                                    {% if producto[6] == 'agotado' %}
+                                        <i class="fas fa-check-circle"></i> Marcar como Disponible
+                                    {% else %}
+                                        <i class="fas fa-times-circle"></i> Marcar como Agotado
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

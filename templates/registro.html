@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --color-bg-start: #bde0fe; /* Azul cielo suave */
+            --color-bg-end: #cdb4db;   /* Lavanda suave */
+            --color-card-bg: rgba(255, 255, 255, 0.25);
+            --color-card-border: rgba(255, 255, 255, 0.4);
+            --color-card-shadow: rgba(144, 12, 198, 0.2); /* Sombra púrpura sutil */
+            --color-icon-bg: #8e7cc3; /* Púrpura medio para iconos */
+            --color-text-dark: #3a0ca3; /* Púrpura oscuro para títulos */
+            --color-text-light: #f1eef6; /* Casi blanco para etiquetas */
+            --color-input-bg: rgba(255, 255, 255, 0.4);
+            --color-input-focus-bg: rgba(255, 255, 255, 0.55);
+            --color-input-text: #2a005c; /* Púrpura muy oscuro */
+            --color-input-placeholder: rgba(42, 0, 92, 0.6);
+            --color-accent: #ff006e; /* Rosa vibrante */
+            --color-button-bg: #f72585; /* Rosa más intenso para botón */
+            --color-button-text: #ffffff; /* Blanco para texto de botón */
+            --color-link: #ff006e; /* Rosa vibrante para enlaces */
+            --color-link-hover: #e0005c; /* Rosa más oscuro al pasar el mouse */
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--color-bg-start), var(--color-bg-end));
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(15px); /* Un poco más de blur para mayor profundidad */
+            z-index: -1;
+        }
+
+        .register-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            border: none;
+            border-radius: 25px; /* Bordes más suaves */
+            box-shadow: 0 12px 40px 0 var(--color-card-shadow); /* Sombra más pronunciada pero suave */
+            background: var(--color-card-bg); /* Efecto glassmorphism */
+            backdrop-filter: blur(15px); /* Coincide con el blur del body::before */
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--color-card-border);
+            position: relative;
+            z-index: 2;
+            max-width: 550px; /* Un poco más ancha para una sensación más espaciosa */
+            width: 90%;
+            padding: 50px 40px; /* Más padding para airear el contenido */
+            text-align: center;
+            overflow: hidden; /* Para asegurar que el icono superior no se salga visualmente si hay sombras internas */
+        }
+
+        .title-icon-wrapper {
+            position: absolute;
+            top: -55px; /* Más arriba */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px; /* Más grande */
+            height: 110px; /* Más grande */
+            background-color: var(--color-icon-bg); /* Púrpura medio */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 6px solid var(--color-card-border); /* Borde más pronunciado */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Sombra más fuerte */
+            transition: transform 0.3s ease-in-out; /* Animación al pasar el mouse (si se aplica al contenedor principal) */
+        }
+        .title-icon {
+            color: #fff;
+            font-size: 4.2rem; /* Icono más grande */
+        }
+        .card:hover .title-icon-wrapper {
+             transform: translateX(-50%) translateY(-5px); /* Sutil levantamiento al pasar el mouse sobre la tarjeta */
+        }
+
+
+        h2 {
+            font-family: 'Montserrat', sans-serif; /* Nueva fuente para títulos */
+            color: var(--color-text-dark);
+            margin-top: 2.5rem !important; /* Ajuste para el icono superior */
+            margin-bottom: 2.5rem !important; /* Más espacio debajo del título */
+            font-weight: 700;
+            letter-spacing: 1px; /* Espaciado de letras para el título */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .form-label {
+            color: var(--color-text-light);
+            margin-bottom: 8px; /* Más espacio bajo la etiqueta */
+            font-weight: 400; /* Fuente más ligera */
+            text-align: left;
+            display: block;
+            opacity: 0.9;
+        }
+
+        .form-control, .form-select {
+            border: none;
+            background-color: var(--color-input-bg);
+            border-radius: 15px; /* Bordes aún más suaves */
+            padding: 14px 18px; /* Más padding */
+            color: var(--color-input-text);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232a005c%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-25.3-24.5L146.2%20174.4%2031.9%2044.9A17.6%2017.6%200%200%200%206.6%2069.4L133.3%20202.7c3.9%203.9%208.5%206.6%2013.2%208.7s9%203.2%2013.7%203.2c4.7%200%209.2-1.1%2013.7-3.2s9.3-4.8%2013.2-8.7L287%2069.4z%22%2F%3E%3C%2Fsvg%3E'); /* Flecha hacia abajo en púrpura oscuro */
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 0.9em;
+            padding-right: 40px; /* Más espacio para la flecha del select */
+        }
+        .form-control::placeholder {
+            color: var(--color-input-placeholder);
+        }
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 0, 110, 0.25); /* Sombra de enfoque con color de acento */
+            background-color: var(--color-input-focus-bg);
+            border: none;
+            outline: none; /* Eliminar el outline por defecto */
+        }
+        .form-select option {
+            color: var(--color-input-text);
+            background-color: var(--color-bg-start); /* Fondo de las opciones para mayor legibilidad */
+        }
+
+        .input-group .form-control,
+        .input-group .form-select {
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
+        .input-group-text {
+            background: transparent;
+            border: none;
+            color: var(--color-accent); /* Rosa vibrante para iconos */
+            border-radius: 15px 0 0 15px; /* Ajusta los bordes */
+            padding-left: 18px; /* Más padding a la izquierda del icono */
+            padding-right: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--color-button-bg); /* Rosa más intenso */
+            color: var(--color-button-text);
+            border: none;
+            border-radius: 15px; /* Bordes más suaves */
+            padding: 14px 0; /* Más padding */
+            font-size: 1.2rem; /* Fuente más grande */
+            font-weight: bold;
+            box-shadow: 0 6px 15px rgba(255, 0, 110, 0.3); /* Sombra con color de acento */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            width: 100%;
+            letter-spacing: 0.5px;
+            text-transform: uppercase; /* Texto en mayúsculas */
+        }
+        .btn-primary:hover {
+            background: var(--color-link-hover); /* Rosa más oscuro */
+            transform: translateY(-2px); /* Efecto de "levantamiento" */
+            box-shadow: 0 8px 20px rgba(255, 0, 110, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0); /* Al presionar */
+            box-shadow: 0 4px 10px rgba(255, 0, 110, 0.2);
+        }
+
+        p.mt-4 {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            margin-top: 2.5rem !important; /* Más espacio */
+            opacity: 0.9;
+        }
+        p.mt-4 a {
+            color: var(--color-link) !important;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+        p.mt-4 a:hover {
+            color: var(--color-link-hover) !important;
+            text-decoration: underline; /* Subrayado al pasar el mouse */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .card {
+                padding: 30px 20px;
+            }
+            .title-icon-wrapper {
+                width: 80px;
+                height: 80px;
+                top: -40px;
+            }
+            .title-icon {
+                font-size: 3rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+                margin-top: 1.5rem !important;
+                margin-bottom: 1.5rem !important;
+            }
+            .form-control, .form-select {
+                padding: 10px 15px;
+            }
+            .btn-primary {
+                padding: 10px 0;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="card">
+            <div class="title-icon-wrapper">
+                <i class="fas fa-user-plus title-icon"></i> </div>
+            <h2>Registro de Usuario</h2>
+            <form action="{{ url_for('registro') }}" method="post" class="mt-4">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre Completo</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa tu nombre completo" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@dominio.com" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="contraseña" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        <input type="password" class="form-control" id="contraseña" name="contraseña" placeholder="Define una contraseña segura" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="rol" class="form-label">Tu Rol</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-users"></i></span>
+                        <select class="form-control form-select" id="rol" name="rol" required>
+                            <option value="" disabled selected>Selecciona tu rol</option>
+                            <option value="cliente">Cliente</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-grid gap-2"> <button type="submit" class="btn btn-primary">Registrar Cuenta</button>
+                </div>
+            </form>
+            <p class="mt-4">¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>.</p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

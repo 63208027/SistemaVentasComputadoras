@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            /* Colores del panel de administrador (para consistencia) */
+            --primary-color: #1d3557; /* Azul oscuro dominante */
+            --secondary-color: #457b9d; /* Azul medio para acentos */
+            --accent-color: #e63946; /* Rojo vibrante para resaltar */
+            --light-bg: #f8f9fa; /* Fondo muy claro */
+            --text-dark: #212529; /* Texto oscuro general */
+            --text-light: #f1faee; /* Texto claro, casi blanco */
+            --success-color: #28a745; /* Verde para disponible */
+            --danger-color: #dc3545; /* Rojo para agotado/eliminar */
+            --warning-color: #ffc107; /* Amarillo para acciones secundarias */
+
+            /* RGB values for shadow use */
+            --primary-color-rgb: 29, 53, 87;
+            --secondary-color-rgb: 69, 123, 157;
+            --accent-color-rgb: 230, 57, 70;
+            --light-bg-rgb: 248, 249, 250;
+            --text-dark-rgb: 33, 37, 41;
+            --text-light-rgb: 241, 250, 238;
+            --success-color-rgb: 40, 167, 69;
+            --danger-color-rgb: 220, 53, 69;
+            --warning-color-rgb: 255, 193, 7;
+
+            /* Colores específicos para la sección de la tabla (similar a los formularios) */
+            --table-section-bg: rgba(255, 255, 255, 0.1); /* Fondo semitransparente para el wrapper de la tabla */
+            --table-section-border: rgba(255, 255, 255, 0.2);
+            --table-section-shadow-color: rgba(0, 0, 0, 0.08);
+
+            /* Colores para la tabla en sí */
+            --table-header-bg: rgba(var(--secondary-color-rgb), 0.3); /* Encabezado de tabla transparente */
+            --table-header-text: var(--text-light); /* Texto de encabezado claro */
+            --table-row-bg: rgba(255, 255, 255, 0.08); /* Fondo de fila transparente */
+            --table-row-hover-bg: rgba(255, 255, 255, 0.15); /* Fondo de fila al pasar el mouse */
+            --table-border-color: rgba(255, 255, 255, 0.2);
+            --table-text-color: var(--text-light); /* Texto de celda claro */
+
+            /* Colores para el botón */
+            --button-bg-start: var(--primary-color);
+            --button-bg-end: var(--secondary-color);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-bg), #e9ecef); /* Fondo suave del admin panel */
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* --- Encabezado / Navbar (Reutilizado del panel de administrador) --- */
+        .admin-header {
+            background-color: var(--primary-color);
+            padding: 1.5rem 0;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15); /* Sombra consistente */
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .admin-nav .nav-link {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-nav .nav-link:hover,
+        .admin-nav .nav-link.active {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        /* --- Contenido Principal (para la tabla) --- */
+        .main-content {
+            padding: 2rem 1.5rem; /* Espaciado general del contenido */
+            display: flex;
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: flex-start; /* Alinear arriba, no centrar verticalmente */
+            min-height: calc(100vh - 100px); /* Ajustar la altura para que el contenido no esté pegado al header */
+        }
+
+        /* --- Wrapper de la Tabla con estilo Glassmorphism --- */
+        .table-glass-wrapper {
+            background: var(--table-section-bg);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid var(--table-section-border);
+            border-radius: 30px;
+            box-shadow: 0 15px 50px 0 var(--table-section-shadow-color),
+                        0 0 0 10px rgba(255, 255, 255, 0.05),
+                        0 0 0 20px rgba(255, 255, 255, 0.02);
+            max-width: 900px; /* Ancho para la tabla */
+            width: 100%;
+            padding: 40px 50px; /* Padding interno */
+            margin-top: 30px; /* Espacio desde el header */
+            transition: all 0.4s ease-in-out;
+            overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
+        }
+
+        .table-glass-wrapper:hover {
+            box-shadow: 0 20px 70px 0 var(--table-section-shadow-color),
+                        0 0 0 12px rgba(255, 255, 255, 0.07),
+                        0 0 0 25px rgba(255, 255, 255, 0.03);
+        }
+
+        /* Título de la sección - MÁS NÍTIDO */
+        .table-glass-wrapper h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-light); /* Asegura que el color sea el blanco claro definido */
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5), /* Sombra más pronunciada */
+                         0 0 20px rgba(0,0,0,0.3); /* Y una segunda sombra para un efecto más nítido */
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Estilo de la tabla */
+        .table {
+            --bs-table-bg: transparent; /* Fondo transparente para la tabla Bootstrap 5 */
+            color: var(--table-text-color);
+            border-color: var(--table-border-color); /* Color de borde de tabla */
+            border-radius: 20px; /* Bordes redondeados para la tabla interna */
+            overflow: hidden; /* Asegura que los bordes redondeados se apliquen bien */
+        }
+
+        .table thead {
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            border-color: var(--table-border-color);
+            vertical-align: middle; /* Centra el contenido verticalmente */
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--table-row-hover-bg);
+        }
+
+        /* Estilo del botón "Volver al Dashboard" */
+        .btn-primary {
+            background: linear-gradient(45deg, var(--button-bg-start), var(--button-bg-end));
+            color: var(--text-light);
+            border: none;
+            border-radius: 25px;
+            padding: 16px 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(var(--secondary-color-rgb), 0.4);
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            display: inline-flex; /* Para centrar el botón con gap */
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--button-bg-end), var(--button-bg-start));
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(var(--secondary-color-rgb), 0.6);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 15px rgba(var(--secondary-color-rgb), 0.3);
+            background: linear-gradient(45deg, var(--button-bg-end), var(--button-bg-start));
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: skewX(-20deg);
+            transition: all 0.7s ease;
+            z-index: -1;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        /* Responsive Navbar (from admin panel) */
+        @media (max-width: 991.98px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-bottom: 0.5rem;
+            }
+            .admin-header h1 {
+                margin-bottom: 1rem;
+            }
+            .admin-nav .nav {
+                flex-direction: column;
+                width: 100%;
+            }
+            .admin-nav .nav-item {
+                width: 100%;
+            }
+            .admin-nav .nav-link {
+                padding: 0.75rem 1.5rem;
+                border-radius: 0;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .admin-nav .nav-link:last-child {
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .admin-nav .nav-item:not(:last-child) {
+                margin-right: 0.5rem;
+            }
+        }
+
+        /* Responsive for table wrapper */
+        @media (max-width: 768px) {
+            .table-glass-wrapper {
+                padding: 30px 20px;
+                max-width: 95%;
+                margin-top: 20px;
+            }
+            .table-glass-wrapper h1 {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            .btn-primary {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .table-glass-wrapper {
+                padding: 25px 15px;
+                margin-top: 15px;
+            }
+            .table-glass-wrapper h1 {
+                font-size: 1.8rem;
+                margin-bottom: 1.2rem;
+            }
+            .btn-primary {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <header class="admin-header px-4">
+            <h1>Panel de Administrador</h1>
+            <nav class="admin-nav">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a href="{{ url_for('agregar_producto') }}" class="nav-link">
+                            <i class="fas fa-plus-circle"></i> Agregar Producto
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('modificar_producto') }}" class="nav-link">
+                            <i class="fas fa-edit"></i> Modificar Producto
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('ver_clientes') }}" class="nav-link active"> {# Agregado 'active' #}
+                            <i class="fas fa-users"></i> Ver Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('logout') }}" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            <div class="table-glass-wrapper">
+                <h1><i class="fas fa-users-cog"></i> Lista de Clientes</h1>
+
+                <div class="table-responsive"> {# Permite el scroll horizontal en pantallas pequeñas #}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cliente in clientes %}
+                            <tr>
+                                <td>{{ cliente[0] }}</td>
+                                <td>{{ cliente[1] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

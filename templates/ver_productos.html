@@ -96,9 +96,9 @@
             Agregar al Carrito
         </button>
 
-        <a href="{{ url_for('ver_carrito') }}" class="btn btn-primary">
+        <a href="{{ url_for('ver_carrito', pago=1) }}" class="btn btn-primary">
             Ver Carrito
-        </a>
+       </a>
 
         <a href="{{ url_for('ver_pedidos') }}" class="btn btn-info">
             Ver Pedidos
